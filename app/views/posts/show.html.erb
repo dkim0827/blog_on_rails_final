@@ -1,0 +1,77 @@
+<%= render 'navigation' %>
+
+<div class="show-post-container">
+  <br>
+  <small class="path">Home > Posts > <%= @post.title %></small>
+  <div class="show-post p-3">
+    <%= image_tag "wood3.jpg", alt: "post image", class:"post-image", style:"width:40%; height:auto;"%>
+    <div class="post-header">
+      <div class"post-flex">
+        <h1 class="post-header1"><%= @post.title %></h1>
+        <small style="color:black;">by <strong
+            style="color:#0000EE;"><%= @post.user&.full_name || 'DELETED' %></strong></small><br>
+        <small style="color:black;">Posted on
+          <strong style="color:#0000EE;"><%= @post.created_at.strftime("%b %d, %Y") %> |
+            <%= @comments.count %>
+            comments</strong></small>
+        <% if can? :crud, @post %>
+        <div class="post-buttons">
+          <%= link_to 'Edit Post', edit_post_path(@post.id), class: "edit-button"%>
+          <%= link_to("Delete Post", post_path(@post), method: :delete, data:{confirm:'Are you sure?'}, class: "delete-button") %>
+        </div>
+        <% end %>
+      </div>
+      <p class="post-body"><%= @post.body %></p>
+    </div>
+  </div>
+  <hr class="post-hr">
+  <section>
+    <%= form_with(model: [@post, @new_comment], local: true) do |f| %>
+    <h4 class="comment-header"><strong>Comment this post</strong></h4>
+    <% if @new_comment.errors.present? %>
+    <p class="form-errors">
+      <%= @new_comment.errors.full_messages.join(", ") %>
+    </p>
+    <% end %>
+    <div class="form-group">
+      <%= f.text_area(
+            :body,
+            cols: 50,
+            rows: 3,
+            placeholder:"What are your thoughts?",
+            class: "form-control"
+        ) %>
+    </div>
+
+    <%= f.submit 'Write a user comment', class: "comment-button"%>
+    <% end %>
+
+    <hr class="board">
+    <div class="comment">
+      <% @comments.each do |comment| %>
+      <div class="comment-head">
+        <%= image_tag "unknown", alt: "unknown user", class:"unknown-image", style:"width:3%; height:auto;"%>
+        <div class="image-user">
+          <strong>&nbsp;&nbsp;<%= comment.user&.full_name || 'DELETED' %> </strong>
+        </div>
+      </div>
+      <small>Commented in <%= comment.created_at.strftime("%b %d, %Y") %></small>
+      <div class="comment-body">
+        <%= comment.body %> <br>
+      </div>
+      <small>
+        <% if can?(:crud, comment) || can?(:crud, comment.post) %>
+        <%= link_to(
+                    "Delete",
+                    post_comment_path(@post, comment),
+                    method: :delete,
+                    data: {
+                        confirm: "Are you sure?"
+                    }
+                ) %>
+        <% end %>
+      </small>
+      <% end %>
+    </div>
+  </section>
+  <br>

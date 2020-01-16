@@ -1,0 +1,26 @@
+<%= render 'navigation' %>
+<br>
+<div class="sign-in-form container">
+  <div class="sign-in-brand"><a href="<%= root_path %>" class="logo">Blog On Rails</a></div><br>
+  <%= form_with model: @post, local: true do |f|%>
+  <% if @post.errors.present?%>
+  <p>
+    <%= @post.errors.full_messages.join(', ') %>
+  </p>
+  <% end %>
+  <div class="sign-in-content">
+    <h3><strong>Edit Post</strong></h3>
+    <strong><%= f.label :title, "Title"%></strong><br>
+    <%= f.text_field :title, style:"width:100%;"%><br><br>
+    <strong><%= f.label :body, "Body", cols:50, rows:3%></strong><br>
+    <%= f.text_area :body, style:"width:100%;"%><br><br>
+    <div>
+      <%= f.submit "Edit Your Post", style:"width:100%;", class:"sign-in-button"%><br>
+      <p class="terms-of-use"><br>
+        By creating a Post, you agree to Blog on Rails's<br>
+        <strong style="color:#0000EE;">Conditions of Use</strong> and <strong style="color:#0000EE;">Privacy
+        Notice</strong>.</p>
+      <% end %>
+    </div>
+  </div>
+</div>
